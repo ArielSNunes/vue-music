@@ -16,9 +16,9 @@ export default {
       schema: {
         name: "required|min:3|max:100|alpha_spaces",
         email: "required|email",
-        age: "",
-        password: "",
-        confirmPassword: "",
+        age: "required|min_value:18|max_value:100",
+        password: "required|min:3|max:100",
+        confirmPassword: "confirmed:@password",
         country: "",
         tos: ""
       }
@@ -128,28 +128,35 @@ export default {
             <!-- Age -->
             <div class="mb-3">
               <label class="inline-block mb-2">Age</label>
-              <input
+              <vee-field
                 type="number"
+                name="age"
                 class="block w-full py-1.5 px-3 text-gray-800 border border-gray-300 transition duration-500 focus:outline-none focus:border-black rounded"
               />
+              <ErrorMessage class="text-red-600" name="age" />
             </div>
             <!-- Password -->
             <div class="mb-3">
               <label class="inline-block mb-2">Password</label>
-              <input
+              <vee-field
                 type="password"
                 class="block w-full py-1.5 px-3 text-gray-800 border border-gray-300 transition duration-500 focus:outline-none focus:border-black rounded"
                 placeholder="Password"
+                name="password"
+                ref="password"
               />
+              <ErrorMessage class="text-red-600" name="password" />
             </div>
             <!-- Confirm Password -->
             <div class="mb-3">
               <label class="inline-block mb-2">Confirm Password</label>
-              <input
+              <vee-field
                 type="password"
                 class="block w-full py-1.5 px-3 text-gray-800 border border-gray-300 transition duration-500 focus:outline-none focus:border-black rounded"
                 placeholder="Confirm Password"
+                name="confirmPassword"
               />
+              <ErrorMessage class="text-red-600" name="confirmPassword" />
             </div>
             <!-- Country -->
             <div class="mb-3">
