@@ -1,5 +1,15 @@
 import { defineRule, ErrorMessage, Field, Form } from "vee-validate"
-import { alpha_spaces, confirmed, email, max, max_value, min, min_value, required } from "@vee-validate/rules"
+import {
+  alpha_spaces,
+  confirmed,
+  email,
+  max,
+  max_value,
+  min,
+  min_value,
+  not_one_of,
+  required
+} from "@vee-validate/rules"
 
 export default {
   install(vueAppInstance, options) {
@@ -15,5 +25,6 @@ export default {
     defineRule("min_value", min_value)
     defineRule("max_value", max_value)
     defineRule("confirmed", confirmed)
+    defineRule("not_in", not_one_of)
   }
 }
