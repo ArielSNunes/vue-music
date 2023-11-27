@@ -17,10 +17,14 @@ export default {
         name: "required|min:3|max:100|alpha_spaces",
         email: "required|email",
         age: "required|min_value:18|max_value:100",
-        password: "required|min:3|max:100",
+        password: "required|min:9|max:100|not_in:password",
         confirmPassword: "confirmed:@password",
         country: "required|not_in:Antarctica",
         tos: "required"
+      },
+      userData: {
+        country: "USA",
+        age: 29
       }
     }
   },
@@ -107,7 +111,7 @@ export default {
           </form>
 
           <!-- Registration Form -->
-          <vee-form v-show="tab === 'register'" :validation-schema="schema" @submit="register">
+          <vee-form v-show="tab === 'register'" :validation-schema="schema" @submit="register" :initial-values="userData">
             <!-- Name -->
             <div class="mb-3">
               <label class="inline-block mb-2">Name</label>
@@ -144,13 +148,20 @@ export default {
             <div class="mb-3">
               <label class="inline-block mb-2">Password</label>
               <vee-field
-                type="password"
-                class="block w-full py-1.5 px-3 text-gray-800 border border-gray-300 transition duration-500 focus:outline-none focus:border-black rounded"
-                placeholder="Password"
                 name="password"
                 ref="password"
-              />
-              <ErrorMessage class="text-red-600" name="password" />
+                :bails="false"
+                v-slot="{ field, errors }"
+              >
+                <input
+                  type="password"
+                  class="block w-full py-1.5 px-3 text-gray-800 border border-gray-300 transition duration-500 focus:outline-none focus:border-black rounded"
+                  placeholder="Password" v-bind="field"
+                />
+                <div class="text-red-600">
+                  <p v-for="error in errors" :key="error">{{ error }}</p>
+                </div>
+              </vee-field>
             </div>
             <!-- Confirm Password -->
             <div class="mb-3">
