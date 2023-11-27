@@ -1,5 +1,5 @@
 import { defineRule, ErrorMessage, Field, Form } from "vee-validate"
-import { required } from "@vee-validate/rules"
+import { alpha_spaces, email, max, min, required } from "@vee-validate/rules"
 
 export default {
   install(vueAppInstance, options) {
@@ -8,5 +8,9 @@ export default {
     vueAppInstance.component("ErrorMessage", ErrorMessage)
 
     defineRule("required", required)
+    defineRule("min", min)
+    defineRule("max", max)
+    defineRule("alpha_spaces", alpha_spaces)
+    defineRule("email", email)
   }
 }
