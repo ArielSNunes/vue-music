@@ -18,18 +18,29 @@ export default {
         email: "required|email",
         age: "required|min_value:18|max_value:100",
         password: "required|min:9|max:100|not_in:password",
-        confirmPassword: "confirmed:@password",
-        country: "required|not_in:Antarctica",
-        tos: "required"
+        confirmPassword: "passwords_mismatch:@password",
+        country: "required|country_not_in:Antarctica",
+        tos: "tos"
       },
       userData: {
         country: "USA",
         age: 29
-      }
+      },
+      registrationInSubmission: false,
+      registrationShowAlert: false,
+      registrationAlertVariant: "bg-blue-500",
+      registrationAlertMessage: "Please wait! Your account is being created."
     }
   },
   methods: {
     register(values, event) {
+      this.registrationShowAlert = true
+      this.registrationInSubmission = true
+      this.registrationAlertVariant = "bg-blue-500"
+      this.registrationAlertMessage = "Please wait! Your account is being created."
+
+      this.registrationAlertVariant = "bg-green-500"
+      this.registrationAlertMessage = "Success! Your account has been created."
       console.log(values)
     }
   }
@@ -111,7 +122,17 @@ export default {
           </form>
 
           <!-- Registration Form -->
-          <vee-form v-show="tab === 'register'" :validation-schema="schema" @submit="register" :initial-values="userData">
+          <div
+            class="text-white text-center font-bold p-4 rounded mb-4"
+            :class="registrationAlertVariant"
+            v-if="registrationShowAlert"
+          >
+            {{ registrationAlertMessage }}
+          </div>
+          <vee-form v-show="tab === 'register'"
+                    :validation-schema="schema"
+                    @submit="register"
+                    :initial-values="userData">
             <!-- Name -->
             <div class="mb-3">
               <label class="inline-block mb-2">Name</label>
@@ -204,6 +225,7 @@ export default {
             </div>
             <button
               type="submit"
+              :disabled="registrationInSubmission"
               class="block w-full bg-purple-600 text-white py-1.5 px-3 rounded transition hover:bg-purple-700"
             >
               Submit
