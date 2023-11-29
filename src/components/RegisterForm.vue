@@ -1,4 +1,8 @@
 <script>
+import { Registration } from "@/services/Registration"
+import { auth, db } from "@/includes/firebase"
+import { Database } from "@/services/Database"
+
 export default {
   name: "RegisterForm",
   data() {
@@ -24,15 +28,36 @@ export default {
     }
   },
   methods: {
-    register(values, event) {
+    async register(values, event) {
       this.registrationShowAlert = true
       this.registrationInSubmission = true
       this.registrationAlertVariant = "bg-blue-500"
       this.registrationAlertMessage = "Please wait! Your account is being created."
-
-      this.registrationAlertVariant = "bg-green-500"
-      this.registrationAlertMessage = "Success! Your account has been created."
-      console.log(values)
+      
+      const registration = new Registration(auth)
+      const database = new Database(db)
+      
+      try {
+        const userCredentials = await registration.registerUser({
+          email: values.email,
+          password: values.password
+        })
+        
+        const userDb = await database.addUser({
+          name: values.name,
+          email: values.email,
+          age: values.age,
+          country: values.country
+        })
+        
+        this.registrationInSubmission = true
+        this.registrationAlertVariant = "bg-green-500"
+        this.registrationAlertMessage = "Success! Your account has been created."
+      } catch (error) {
+        this.registrationInSubmission = false
+        this.registrationAlertVariant = "bg-red-500"
+        this.registrationAlertMessage = "An unexpected error occured. Please try again later."
+      }
     }
   }
 }

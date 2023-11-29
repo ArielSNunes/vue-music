@@ -16,7 +16,7 @@ export default {
     vueAppInstance.component("VeeForm", Form)
     vueAppInstance.component("VeeField", Field)
     vueAppInstance.component("ErrorMessage", ErrorMessage)
-
+    
     defineRule("required", required)
     defineRule("min", min)
     defineRule("max", max)
@@ -28,7 +28,7 @@ export default {
     defineRule("not_in", not_one_of)
     defineRule("country_not_in", not_one_of)
     defineRule("tos", required)
-
+    
     configure({
       generateMessage: (ctx) => {
         const messages = {
@@ -44,7 +44,7 @@ export default {
           passwords_mismatch: "The password don't match",
           tos: "You must accept the terms of service"
         }
-
+        
         return messages[ctx.rule.name] ?? `The field ${ctx.field} is invalid.`
       },
       validateOnBlur: true,
