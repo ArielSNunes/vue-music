@@ -1,7 +1,6 @@
 <script>
-import { Auth } from "@/services/Auth"
-import { auth, db } from "@/includes/firebase"
-import { Database } from "@/services/Database"
+import { mapActions } from "pinia"
+import { useUserStore } from "@/stores/users"
 
 export default {
   name: "RegisterForm",
@@ -24,32 +23,21 @@ export default {
       registrationInSubmission: false,
       registrationShowAlert: false,
       registrationAlertVariant: "bg-blue-500",
-      registrationAlertMessage: "Please wait! Your account is being created."
+      registrationAlertMessage: "Please wait! Your account is being created.",
     }
   },
   methods: {
+    ...mapActions(useUserStore, {
+      createUser: "register"
+    }),
     async register(values, event) {
       this.registrationShowAlert = true
       this.registrationInSubmission = true
       this.registrationAlertVariant = "bg-blue-500"
       this.registrationAlertMessage = "Please wait! Your account is being created."
       
-      const registration = new Auth(auth)
-      const database = new Database(db)
-      
       try {
-        const userCredentials = await registration.registerUser({
-          email: values.email,
-          password: values.password
-        })
-        
-        const userDb = await database.addUser({
-          name: values.name,
-          email: values.email,
-          age: values.age,
-          country: values.country
-        })
-        
+        await this.createUser(values)
         this.registrationInSubmission = true
         this.registrationAlertVariant = "bg-green-500"
         this.registrationAlertMessage = "Success! Your account has been created."
