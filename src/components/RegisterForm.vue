@@ -1,5 +1,5 @@
 <script>
-import { Registration } from "@/services/Registration"
+import { Auth } from "@/services/Auth"
 import { auth, db } from "@/includes/firebase"
 import { Database } from "@/services/Database"
 
@@ -34,7 +34,7 @@ export default {
       this.registrationAlertVariant = "bg-blue-500"
       this.registrationAlertMessage = "Please wait! Your account is being created."
       
-      const registration = new Registration(auth)
+      const registration = new Auth(auth)
       const database = new Database(db)
       
       try {

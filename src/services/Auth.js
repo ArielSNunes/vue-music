@@ -1,7 +1,7 @@
 /**
  * Classe responsável pelo processo de login e cadastro
  */
-export class Registration {
+export class Auth {
   /**
    *
    * @param {firebase.auth.Auth} auth
