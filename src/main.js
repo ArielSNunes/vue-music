@@ -3,15 +3,23 @@ import "./assets/main.css"
 import { createApp } from "vue"
 import { createPinia } from "pinia"
 import VeeValidatePlugin from "@/includes/validation"
-import "@/includes/firebase"
+import { auth } from "@/includes/firebase"
 
 import App from "./App.vue"
 import router from "./router"
 
-const app = createApp(App)
+let app
+// Método para o firebase iniciar a autenticação antes do app
+auth.onAuthStateChanged(() => {
+	// Caso já exista o app, não inicia novamente
+	if (app) return;
 
-app.use(createPinia())
-app.use(router)
-app.use(VeeValidatePlugin, { foo: 100 })
+	// Inicia o app corretamente
+	app = createApp(App)
 
-app.mount("#app")
+	app.use(createPinia())
+	app.use(router)
+	app.use(VeeValidatePlugin, { foo: 100 })
+
+	app.mount("#app")
+})
