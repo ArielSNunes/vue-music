@@ -1,6 +1,9 @@
 <script>
 import { mapActions } from "pinia"
 import { useUserStore } from "@/stores/users"
+import { Redirect } from "@/services/Redirect"
+
+const redirect = new Redirect()
 
 export default {
   name: "LoginForm",
@@ -35,6 +38,7 @@ export default {
         this.loginInSubmission = true
         this.loginAlertVariant = "bg-green-500"
         this.loginAlertMessage = "Login Successful!"
+        redirect.reload()
       } catch (error) {
         this.loginInSubmission = false
         this.loginAlertVariant = "bg-red-500"

@@ -29,13 +29,24 @@ export const useUserStore = defineStore("user", {
     userLoggedIn: false
   }),
   actions: {
+    async signOut() {
+      const signOut = await registration.signOut()
+
+      this.userLoggedIn = false
+      
+      return signOut
+    },
     /**
      * @param {LoginParams} values
      * @returns {Promise<firebase.auth.UserCredential>}
      */
     async authenticate(values) {
-      // Do login with email and password
-      return await registration.login(values)
+      // Faz o login do usuário, com e-mail e senha
+      const login = await registration.login(values)
+
+      this.userLoggedIn = true
+
+      return login
     },
     /**
      * @param {RegisterParams} values
