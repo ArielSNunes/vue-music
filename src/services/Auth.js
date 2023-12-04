@@ -19,7 +19,7 @@ export class Auth {
   constructor(auth) {
     this.auth = auth
   }
-  
+
   /**
    * Método responsável por registrar o usuário na auth do firebase, via email
    * e senha
@@ -34,7 +34,7 @@ export class Auth {
         userData.password
     )
   }
-  
+
   /**
    * Método responsável por atualizar o perfil do usuário no firebase
    *
@@ -49,5 +49,14 @@ export class Auth {
     return await userCredentials.user.updateProfile({
       displayName: userProfile.name
     })
+  }
+
+  /**
+   * Método responsável pelo login do usuário via e-mail
+   * @param {UserData} userData
+   * @returns {Promise<firebase.auth.UserCredential>}
+   */
+  login = async ({ email, password }) => {
+    return await this.auth.signInWithEmailAndPassword(email, password)
   }
 }
