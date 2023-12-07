@@ -1,6 +1,22 @@
 <script>
 export default {
-  name: "Upload"
+  name: "Upload",
+  data() {
+    return {
+      isDragover: false
+    }
+  },
+  methods: {
+    removeDrag() {
+      this.isDragover = false
+    },
+    addDrag() {
+      this.isDragover = true
+    },
+    upload(e) {
+      this.isDragover = false
+    }
+  }
 }
 </script>
 
@@ -16,6 +32,16 @@ export default {
       <!-- Upload Dropbox -->
       <div
         class="w-full px-10 py-20 rounded text-center cursor-pointer border border-dashed border-gray-400 text-gray-400 transition duration-500 hover:text-white hover:bg-green-400 hover:border-green-400 hover:border-solid"
+        :class="{
+          'bg-green-400 border-green-400 border-solid' : isDragover
+        }"
+        @drag.prevent.stop=""
+        @dragstart.prevent.stop=""
+        @dragend.prevent.stop="removeDrag"
+        @dragover.prevent.stop="addDrag"
+        @dragenter.prevent.stop="addDrag"
+        @dragleave.prevent.stop="removeDrag"
+        @drop.prevent.stop="upload"
       >
         <h5>Drop your files here</h5>
       </div>
