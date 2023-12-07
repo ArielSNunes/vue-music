@@ -21,7 +21,8 @@ const router = createRouter({
       name: "manage",
       component: ManageView
     }
-  ]
+  ],
+  linkExactActiveClass: 'text-yellow-500'
 })
 
 export default router
