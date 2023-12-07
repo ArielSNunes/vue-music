@@ -60,6 +60,10 @@ export class Auth {
     return await this.auth.signInWithEmailAndPassword(email, password)
   }
 
+  /**
+   * Método responsável por deslogar o usuário
+   * @returns {Promise<void>}
+   */
   signOut = async () => {
     return await this.auth.signOut()
   }

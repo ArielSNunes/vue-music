@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from "vue-router"
 import HomeView from "@/views/HomeView.vue"
 import AboutView from "@/views/AboutView.vue"
 import ManageView from "@/views/ManageView.vue"
+import { useUserStore } from "@/stores/users"
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -20,7 +21,14 @@ const router = createRouter({
       path: "/manage-music",
       name: "manage",
       component: ManageView,
-      // alias: ["/manage"]
+      // alias: ["/manage"],
+      // beforeEnter: (to, from, next) => {
+      //   console.log("manage route guard")
+      //   next()
+      // },
+      meta: {
+        requiresAuth: true
+      }
     },
     {
       path: "/manage",
@@ -40,8 +48,15 @@ const router = createRouter({
 
 router.beforeEach(
     (to, from, next) => {
-      console.log(to, from)
-      next()
+      if (!to.meta.requiresAuth) {
+        return next()
+      }
+
+      const store = useUserStore()
+      if (!store.userLoggedIn) {
+        return this.$router.push({ name: "home" })
+      }
+      return next()
     }
 )
 

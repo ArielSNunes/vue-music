@@ -1,6 +1,13 @@
 <script>
 export default {
-  name: "ManageView"
+  name: "ManageView",
+  // beforeRouteEnter: (to, from, next) => {
+  //   const store = useUserStore()
+  //   if (!store.userLoggedIn) {
+  //     return next({ name: "home" })
+  //   }
+  //   next()
+  // }
 }
 </script>
 
