@@ -17,12 +17,16 @@ const router = createRouter({
       name: "about"
     },
     {
-      path: "/manage",
+      path: "/manage-music",
       name: "manage",
       component: ManageView
+    },
+    {
+      path: "/manage",
+      redirect: { name: 'manage' }
     }
   ],
-  linkExactActiveClass: 'text-yellow-500'
+  linkExactActiveClass: "text-yellow-500"
 })
 
 export default router

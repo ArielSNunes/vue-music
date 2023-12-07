@@ -31,7 +31,7 @@ export default {
         <!-- Primary Navigation -->
         <ul class="flex flex-row mt-1">
           <li>
-            <router-link class="px-2 text-white" :to="{name: about}">About</router-link>
+            <router-link class="px-2 text-white" :to="{name: 'about'}">About</router-link>
           </li>
           <!-- Navigation Links -->
           <li v-if="!userStore.userLoggedIn">
