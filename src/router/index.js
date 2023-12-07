@@ -19,11 +19,20 @@ const router = createRouter({
     {
       path: "/manage-music",
       name: "manage",
-      component: ManageView
+      component: ManageView,
+      // alias: ["/manage"]
     },
     {
       path: "/manage",
-      redirect: { name: 'manage' }
+      redirect: {
+        name: "manage"
+      }
+    },
+    {
+      path: "/:catchAll(.*)*",
+      redirect: {
+        name: "home"
+      }
     }
   ],
   linkExactActiveClass: "text-yellow-500"
