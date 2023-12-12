@@ -1,4 +1,8 @@
 <script>
+import { FileHandler } from "@/services/FileHandler"
+import { storage as firebaseStorage } from "@/includes/firebase"
+import { FileStorage } from "@/services/FileStorage"
+
 export default {
   name: "Upload",
   data() {
@@ -7,13 +11,17 @@ export default {
     }
   },
   methods: {
-    removeDrag() {
+    removeDrag(e) {
       this.isDragover = false
     },
-    addDrag() {
+    addDrag(e) {
       this.isDragover = true
     },
-    upload(e) {
+    async upload(e) {
+      const storage = new FileStorage(firebaseStorage)
+      const fileHandler = new FileHandler({ storage })
+      const files = fileHandler.handleDragUpload(e)
+      await fileHandler.uploadMusics(files);
       this.isDragover = false
     }
   }
