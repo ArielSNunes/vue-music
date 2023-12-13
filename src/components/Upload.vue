@@ -2,6 +2,9 @@
 import { FileHandler } from "@/services/FileHandler"
 import { storage as firebaseStorage } from "@/includes/firebase"
 import { FileStorage } from "@/services/FileStorage"
+import { useUploadProgressStore } from "@/stores/uploadProgress"
+import { mapState } from "pinia"
+
 
 export default {
   name: "Upload",
@@ -9,6 +12,9 @@ export default {
     return {
       isDragover: false
     }
+  },
+  computed: {
+    ...mapState(useUploadProgressStore, ["uploads", "progress"])
   },
   methods: {
     removeDrag(e) {
@@ -18,8 +24,9 @@ export default {
       this.isDragover = true
     },
     async upload(e) {
+      const uploadProgressStore = useUploadProgressStore()
       const storage = new FileStorage(firebaseStorage)
-      const fileHandler = new FileHandler({ storage })
+      const fileHandler = new FileHandler({ storage, uploadProgressStore })
       const files = fileHandler.handleDragUpload(e)
       await fileHandler.uploadMusics(files);
       this.isDragover = false
@@ -54,33 +61,16 @@ export default {
         <h5>Drop your files here</h5>
       </div>
       <hr class="my-6" />
-      <!-- Progess Bars -->
-      <div class="mb-4">
+      <!-- Progress Bars -->
+      <div class="mb-4" v-for="upload in uploads" :key="upload.name">
         <!-- File Name -->
-        <div class="font-bold text-sm">Just another song.mp3</div>
+        <div class="font-bold text-sm">{{ upload.name }}</div>
         <div class="flex h-4 overflow-hidden bg-gray-200 rounded">
           <!-- Inner Progress Bar -->
           <div
             class="transition-all progress-bar bg-blue-400"
-            style="width: 75%"
-          ></div>
-        </div>
-      </div>
-      <div class="mb-4">
-        <div class="font-bold text-sm">Just another song.mp3</div>
-        <div class="flex h-4 overflow-hidden bg-gray-200 rounded">
-          <div
-            class="transition-all progress-bar bg-blue-400"
-            style="width: 35%"
-          ></div>
-        </div>
-      </div>
-      <div class="mb-4">
-        <div class="font-bold text-sm">Just another song.mp3</div>
-        <div class="flex h-4 overflow-hidden bg-gray-200 rounded">
-          <div
-            class="transition-all progress-bar bg-blue-400"
-            style="width: 55%"
+            :style="{width: `${upload.currentProgress}%`}"
+            :class="'bg-blue-400'"
           ></div>
         </div>
       </div>

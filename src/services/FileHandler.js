@@ -2,6 +2,7 @@
  * @typedef FileHandlerConstruct
  * @type {object}
  * @property {FileStorage} storage
+ * @property {object} uploadProgressStore
  */
 
 /**
@@ -14,11 +15,11 @@ export class FileHandler {
   constructor(params) {
     this.mimeTypes = {
       musics: [
-        "audio/mpeg",
-        "audio/mp3",
-        "audio/ogg"
+        "audio/mpeg"
       ]
     }
+
+    this.progressStore = params.uploadProgressStore
     this.storage = params.storage
   }
 
@@ -54,13 +55,32 @@ export class FileHandler {
    */
   uploadMusics = async (files, callback) => {
     for await (let file of files) {
-      // if (!this.isMusic(file)) return
+      if (!this.isMusic(file)) return
       const directory = this.storage.createDirPath({
         category: "songs",
         filename: file.name
       })
-      const response = await this.storage.uploadFile(file, { directory })
-      console.log(response)
+      const { task } = await this.storage.uploadFile(file, { directory })
+
+      this.#addFileToProgress({
+        task,
+        currentProgress: 0,
+        name: file.name
+      })
+      console.log(task)
+      task.on("state_changed", this.#handleUploadStateChange)
     }
+  }
+
+  #addFileToProgress = (props) => {
+    this.progressStore.addUpload(props)
+  }
+
+  /**
+   * Método responsável por gerenciar a alteração de status da task
+   * @param snapshot
+   * @returns {Promise<void>}
+   */
+  #handleUploadStateChange = async (snapshot) => {
   }
 }

@@ -46,7 +46,7 @@ export class FileStorage {
    *
    * @param {File} file
    * @param {FileMeta} fileMeta
-   * @returns {string}
+   * @returns {firebase.storage.UploadTask}
    */
   uploadFile = async (file, fileMeta) => {
     const ref = this.storage.ref()
