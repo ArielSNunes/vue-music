@@ -64,13 +64,16 @@ export default {
       <!-- Progress Bars -->
       <div class="mb-4" v-for="upload in uploads" :key="upload.name">
         <!-- File Name -->
-        <div class="font-bold text-sm">{{ upload.name }}</div>
+        <div class="font-bold text-sm" :class="upload.textColor">
+          <i :class="upload.icon"></i>
+          {{ upload.name }}
+        </div>
         <div class="flex h-4 overflow-hidden bg-gray-200 rounded">
           <!-- Inner Progress Bar -->
           <div
             class="transition-all progress-bar bg-blue-400"
             :style="{width: `${upload.currentProgress}%`}"
-            :class="'bg-blue-400'"
+            :class="upload.variant"
           ></div>
         </div>
       </div>

@@ -4,6 +4,9 @@
  * @property {firebase.storage.UploadTask} task
  * @property {number} currentProgress
  * @property {string} name
+ * @property {string} variant
+ * @property {string} icon
+ * @property {string} textColor
  */
 import { defineStore } from "pinia"
 
@@ -16,11 +19,30 @@ export const useUploadProgressStore = defineStore("uploadProgress", {
     /**
      * Método responsável por adicionar um item na lista de uploads
      * @param {AddUploadProps} props
-     * @returns {AddUploadProps[]}
+     * @returns {number}
      */
     addUpload(props) {
-      this.uploads.push(props)
-      return this.uploads
+      return this.uploads.push(props) - 1
+    },
+    /**
+     * Método responsável por atualizar o progresso do upload
+     *
+     * @param {number} index
+     * @param {number} progress
+     */
+    updateUploadProgress(index, progress) {
+      this.uploads[index].currentProgress = progress
+    },
+    /**
+     * Método responsável por atualizar alguns dados dos objetos
+     * @param {number} index
+     * @param {object} data
+     */
+    updateVariantData(index, data) {
+      this.uploads[index] = {
+        ...this.uploads[index],
+        ...data
+      }
     }
   }
 })

@@ -48,9 +48,14 @@ export class FileStorage {
    * @param {FileMeta} fileMeta
    * @returns {firebase.storage.UploadTask}
    */
-  uploadFile = async (file, fileMeta) => {
+  uploadFile = (file, fileMeta) => {
+    // Cria a referência do storage
     const ref = this.storage.ref()
+
+    // Cria a referência das músicas dentro do storage
     const songsRef = ref.child(fileMeta.directory)
+
+    // Inicia o envio
     return songsRef.put(file)
   }
 }
