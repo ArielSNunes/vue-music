@@ -3,6 +3,8 @@
  * @type {object}
  * @property {FileStorage} storage
  * @property {object} uploadProgressStore
+ * @property {Database} db
+ * @property {firebase.auth.Auth} auth
  */
 
 /**
@@ -12,15 +14,22 @@ export class FileHandler {
   /**
    * @param {FileHandlerConstruct} params
    */
-  constructor(params) {
+  constructor({
+    uploadProgressStore,
+    storage,
+    db,
+    auth
+  }) {
     this.mimeTypes = {
       musics: [
         "audio/mpeg"
       ]
     }
 
-    this.progressStore = params.uploadProgressStore
-    this.storage = params.storage
+    this.progressStore = uploadProgressStore
+    this.storage = storage
+    this.db = db
+    this.auth = auth
   }
 
   /**
@@ -32,8 +41,12 @@ export class FileHandler {
    */
   handleDragUpload = (e) => {
     e.preventDefault()
-    const { files } = e.dataTransfer
-    return [...files]
+    // Verifica se tem dataTransfer (arrastar e soltar)
+    if (e.dataTransfer) {
+      const { files } = e.dataTransfer
+      return [...files]
+    }
+    return [...e.target.files]
   }
 
   /**
@@ -50,10 +63,10 @@ export class FileHandler {
    * Metódo fazer o upload das músicas
    *
    * @param {File[]} files
-   * @param {Function} callback
+   * @param {?Function} callback
    * @returns {Promise<void>}
    */
-  uploadMusics = async (files, callback) => {
+  uploadMusics = async (files, callback = null) => {
     // Itera sobre os arquivos
     for (let file of files) {
       // Verifica se é um tipo inválido e retorna
@@ -80,10 +93,10 @@ export class FileHandler {
 
       // Adiciona o evento para atualizar o progresso
       task.on(
-          "state_changed",
-          (snapshot) => this.#handleUploadStateChange(uploadIndex, snapshot),
-          (err) => this.#handleUploadError(uploadIndex, err),
-          () => this.#handleUploadSuccess(uploadIndex)
+        "state_changed",
+        (snapshot) => this.#handleUploadStateChange(uploadIndex, snapshot),
+        (err) => this.#handleUploadError(uploadIndex, err),
+        () => this.#handleUploadSuccess(uploadIndex, task)
       )
     }
   }
@@ -104,7 +117,7 @@ export class FileHandler {
    * @param snapshot
    * @returns {Promise<void>}
    */
-  #handleUploadStateChange = (uploadIndex, snapshot,) => {
+  #handleUploadStateChange = (uploadIndex, snapshot) => {
     const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100
     this.progressStore.updateUploadProgress(uploadIndex, progress)
   }
@@ -127,8 +140,25 @@ export class FileHandler {
    * Método responsável por gerenciar o sucesso no upload
    *
    * @param {number} uploadIndex
+   * @param {firebase.storage.UploadTask} task
    */
-  #handleUploadSuccess = (uploadIndex) => {
+  #handleUploadSuccess = async (uploadIndex, task) => {
+    // Cria o objeto para salvar na base
+    const song = {
+      userId: this.auth.currentUser.uid,
+      displayName: this.auth.currentUser.displayName,
+      originalName: task.snapshot.ref.name,
+      modifiedName: task.snapshot.ref.name,
+      genre: "",
+      commentCount: 0,
+    }
+    // Adiciona a URL
+    song.url = await task.snapshot.ref.getDownloadURL()
+
+    // Salva o dado
+    await this.db.addSong(song)
+
+    // AAtualiza o progresso
     this.progressStore.updateVariantData(uploadIndex, {
       variant: "bg-green-400",
       icon: "fas fa-check",

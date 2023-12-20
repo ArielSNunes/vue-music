@@ -1,17 +1,25 @@
 <script>
 import Upload from "@/components/Upload.vue"
 import MySongs from "@/components/MySongs.vue"
+import { useUploadProgressStore } from "@/stores/uploadProgress"
 
 export default {
   name: "ManageView",
   components: { MySongs, Upload },
-  // beforeRouteEnter: (to, from, next) => {
-  //   const store = useUserStore()
-  //   if (!store.userLoggedIn) {
-  //     return next({ name: "home" })
-  //   }
-  //   next()
-  // }
+  beforeRouteLeave: (to, from, next) => {
+    const uploadProgressStore = useUploadProgressStore()
+    uploadProgressStore.cancelUploads()
+    return next()
+  },
+  beforeRouteEnter: (to, from, next) => {
+    const uploadProgressStore = useUploadProgressStore()
+    //   const store = useUserStore()
+    //   if (!store.userLoggedIn) {
+    //     return next({ name: "home" })
+    //   }
+    uploadProgressStore.resetProgress()
+    next()
+  }
 }
 </script>
 

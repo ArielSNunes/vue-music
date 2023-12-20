@@ -38,7 +38,7 @@ export class FileStorage {
    * @returns {string}
    */
   getDirectory = (type) => {
-    return this.directories[type] ?? ""
+    return this.directories[type] ?? type
   }
 
   /**

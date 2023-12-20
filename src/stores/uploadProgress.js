@@ -17,6 +17,21 @@ export const useUploadProgressStore = defineStore("uploadProgress", {
   }),
   actions: {
     /**
+     * Método responsável por resetar os uploads (reseta o estado)
+     */
+    resetProgress() {
+      this.uploads = []
+      this.progress = 0
+    },
+    /**
+     * Método responsável por cancelar os uploads
+     */
+    cancelUploads() {
+      this.uploads.forEach(upload => {
+        upload.task.cancel()
+      })
+    },
+    /**
      * Método responsável por adicionar um item na lista de uploads
      * @param {AddUploadProps} props
      * @returns {number}

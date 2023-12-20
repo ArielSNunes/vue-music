@@ -1,10 +1,10 @@
 <script>
 import { FileHandler } from "@/services/FileHandler"
-import { storage as firebaseStorage } from "@/includes/firebase"
+import { auth, db as database, storage as firebaseStorage } from "@/includes/firebase"
 import { FileStorage } from "@/services/FileStorage"
 import { useUploadProgressStore } from "@/stores/uploadProgress"
-import { mapState } from "pinia"
-
+import { mapActions, mapState } from "pinia"
+import { Database } from "@/services/Database"
 
 export default {
   name: "Upload",
@@ -16,7 +16,12 @@ export default {
   computed: {
     ...mapState(useUploadProgressStore, ["uploads", "progress"])
   },
+  mounted() {
+    // Ao entrar na página, reseta o state de uploads
+    this.resetProgress()
+  },
   methods: {
+    ...mapActions(useUploadProgressStore, ["resetProgress"]),
     removeDrag(e) {
       this.isDragover = false
     },
@@ -24,11 +29,30 @@ export default {
       this.isDragover = true
     },
     async upload(e) {
+      // Usa a store de progresso
       const uploadProgressStore = useUploadProgressStore()
+
+      // Cria o storage
       const storage = new FileStorage(firebaseStorage)
-      const fileHandler = new FileHandler({ storage, uploadProgressStore })
+
+      // Cria o DB
+      const db = new Database(database)
+
+      // Cria o gerenciamento de arquivos
+      const fileHandler = new FileHandler({
+        storage,
+        uploadProgressStore,
+        db,
+        auth
+      })
+
+      // Captura os arquivos
       const files = fileHandler.handleDragUpload(e)
+
+      // Faz o envio dos arquivos
       await fileHandler.uploadMusics(files);
+
+      // Altera o state
       this.isDragover = false
     }
   }
@@ -60,6 +84,7 @@ export default {
       >
         <h5>Drop your files here</h5>
       </div>
+      <input type="file" multiple @change="upload" />
       <hr class="my-6" />
       <!-- Progress Bars -->
       <div class="mb-4" v-for="upload in uploads" :key="upload.name">
