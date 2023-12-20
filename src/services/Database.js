@@ -38,7 +38,7 @@ export class Database {
    * @param {object} data
    * @returns {Promise<void>}
    */
-  addItemToCollection = async (collection, data) => {
+  #addItemToCollection = async (collection, data) => {
     return await this.db.collection(collection).doc(data.id)
       .set(data)
   }
@@ -63,7 +63,7 @@ export class Database {
    * @returns {Promise<void>}
    */
   addUser = async (data) => {
-    return await this.addItemToCollection(
+    return await this.#addItemToCollection(
       "users",
       this.#basicCreateData(data)
     )
@@ -77,9 +77,24 @@ export class Database {
    * @returns {Promise<void>}
    */
   addSong = async (data) => {
-    return await this.addItemToCollection(
+    return await this.#addItemToCollection(
       "songs",
       this.#basicCreateData(data)
     )
+  }
+
+  /**
+   *
+   * Método responsável por listar os arquivos do usuário
+   *
+   * @param {string} userId
+   *
+   * @return {Promise<firebase.firestore.QuerySnapshot<firebase.firestore.DocumentData>>}
+   */
+  listFiles = async (userId) => {
+    const snapshot = await this.db.collection("songs")
+      .where("userId", "==", userId)
+      .get()
+    return snapshot
   }
 }

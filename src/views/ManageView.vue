@@ -2,10 +2,29 @@
 import Upload from "@/components/Upload.vue"
 import MySongs from "@/components/MySongs.vue"
 import { useUploadProgressStore } from "@/stores/uploadProgress"
+import { Database } from "@/services/Database"
+import { auth, db } from "@/includes/firebase"
 
 export default {
   name: "ManageView",
   components: { MySongs, Upload },
+  data() {
+    return {
+      songs: []
+    }
+  },
+  async created() {
+    const database = new Database(db)
+    const files = await database.listFiles(auth.currentUser.uid)
+    files.forEach(doc => {
+      const song = {
+        ...doc.data(),
+        docId: doc.id
+      }
+
+      this.songs.push(song)
+    })
+  },
   beforeRouteLeave: (to, from, next) => {
     const uploadProgressStore = useUploadProgressStore()
     uploadProgressStore.cancelUploads()
@@ -31,7 +50,7 @@ export default {
         <upload></upload>
       </div>
       <div class="col-span-2">
-        <my-songs></my-songs>
+        <my-songs :songs="songs" />
       </div>
     </div>
   </section>
