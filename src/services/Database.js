@@ -18,6 +18,12 @@
  * @property {string} genre
  * @property {number} commentCount
  * @property {string} url
+ *
+ * @typedef SongUpdateDate
+ * @type {object}
+ * @property {string} modifiedName
+ * @property {string} genre
+ * @property {Date} createdAt
  */
 
 /**
@@ -43,6 +49,12 @@ export class Database {
       .set(data)
   }
 
+  #updateItem = async (collection, id, data) => {
+    const docCollection = await this.db.collection(collection)
+    const doc = await docCollection.doc(id)
+    return await doc.update(data)
+  }
+
   /**
    * Método responsável por adicionar os campos createdAt e updatedAt no objeto
    * @param {object} data
@@ -56,6 +68,18 @@ export class Database {
     }
   }
 
+
+  /**
+   * Método responsável por adicionar os campos updatedAt no objeto
+   * @param {object} data
+   * @returns {object}
+   */
+  #basicUpdateData = (data) => {
+    return {
+      ...data,
+      updatedAt: new Date()
+    }
+  }
   /**
    * Método responsável por adicionar o usuário na base
    *
@@ -96,5 +120,19 @@ export class Database {
       .where("userId", "==", userId)
       .get()
     return snapshot
+  }
+
+  /**
+   * Método responsável por atualizar a música
+   * @param {string} songId
+   * @param {SongUpdateDate} data
+   * @return {Promise<void>}
+   */
+  updateSong = async (songId, data) => {
+    return await this.#updateItem(
+      "songs",
+      songId,
+      this.#basicUpdateData(data)
+    )
   }
 }

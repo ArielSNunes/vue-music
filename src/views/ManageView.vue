@@ -4,14 +4,17 @@ import MySongs from "@/components/MySongs.vue"
 import { useUploadProgressStore } from "@/stores/uploadProgress"
 import { Database } from "@/services/Database"
 import { auth, db } from "@/includes/firebase"
+import { mapActions, mapState } from "pinia"
+import { useSongs } from "@/stores/songs"
 
 export default {
   name: "ManageView",
   components: { MySongs, Upload },
-  data() {
-    return {
-      songs: []
-    }
+  computed: {
+    ...mapState(useSongs, ["songs"])
+  },
+  methods: {
+    ...mapActions(useSongs, ["addSong"])
   },
   async created() {
     const database = new Database(db)
@@ -21,8 +24,7 @@ export default {
         ...doc.data(),
         docId: doc.id
       }
-
-      this.songs.push(song)
+      this.addSong(song)
     })
   },
   beforeRouteLeave: (to, from, next) => {
