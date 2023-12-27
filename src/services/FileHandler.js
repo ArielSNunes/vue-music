@@ -5,6 +5,7 @@
  * @property {object} uploadProgressStore
  * @property {Database} db
  * @property {firebase.auth.Auth} auth
+ * @property {object} songsStore
  */
 
 /**
@@ -18,7 +19,8 @@ export class FileHandler {
     uploadProgressStore,
     storage,
     db,
-    auth
+    auth,
+    songsStore
   }) {
     this.mimeTypes = {
       musics: [
@@ -30,6 +32,7 @@ export class FileHandler {
     this.storage = storage
     this.db = db
     this.auth = auth
+    this.songsStore = songsStore
   }
 
   /**
@@ -152,11 +155,16 @@ export class FileHandler {
       genre: "",
       commentCount: 0,
     }
-    // Adiciona a URL
-    song.url = await task.snapshot.ref.getDownloadURL()
+    const songRef = task.snapshot.ref
 
-    // Salva o dado
-    await this.db.addSong(song)
+    // Adiciona a URL
+    song.url = await songRef.getDownloadURL()
+
+    // Salva o dado e captura a referência
+    const songFromDb = await this.db.addSong(song)
+
+    // Adiciona o arquivo na store
+    this.songsStore.addSong({ ...song, docId: songFromDb.id })
 
     // AAtualiza o progresso
     this.progressStore.updateVariantData(uploadIndex, {

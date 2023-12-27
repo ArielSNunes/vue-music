@@ -42,11 +42,12 @@ export class Database {
    *
    * @param {string} collection
    * @param {object} data
-   * @returns {Promise<void>}
+   * @returns {Promise<firebase.firestore.DocumentReference<firebase.firestore.DocumentData>>}
    */
   #addItemToCollection = async (collection, data) => {
-    return await this.db.collection(collection).doc(data.id)
-      .set(data)
+    const docRef = await this.db.collection(collection).doc(data.id)
+    await docRef.set(data)
+    return docRef
   }
 
   #updateItem = async (collection, id, data) => {
@@ -129,10 +130,18 @@ export class Database {
    * @return {Promise<void>}
    */
   updateSong = async (songId, data) => {
-    return await this.#updateItem(
-      "songs",
-      songId,
-      this.#basicUpdateData(data)
-    )
+    const updateData = this.#basicUpdateData(data)
+    console.log(songId, updateData)
+    return await this.#updateItem("songs", songId,updateData)
+  }
+
+  /**
+   * Delete a música
+   * @param {string} songId
+   * @return {Promise<void>}
+   */
+  deleteSong = async (songId) => {
+    const fileRef = await this.db.collection("songs").doc(songId)
+    return await fileRef.delete()
   }
 }

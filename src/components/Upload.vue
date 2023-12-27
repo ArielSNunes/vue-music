@@ -5,6 +5,7 @@ import { FileStorage } from "@/services/FileStorage"
 import { useUploadProgressStore } from "@/stores/uploadProgress"
 import { mapActions, mapState } from "pinia"
 import { Database } from "@/services/Database"
+import { useSongsStore } from "@/stores/songs"
 
 export default {
   name: "Upload",
@@ -32,6 +33,8 @@ export default {
       // Usa a store de progresso
       const uploadProgressStore = useUploadProgressStore()
 
+      const songsStore = useSongsStore()
+
       // Cria o storage
       const storage = new FileStorage(firebaseStorage)
 
@@ -43,7 +46,8 @@ export default {
         storage,
         uploadProgressStore,
         db,
-        auth
+        auth,
+        songsStore
       })
 
       // Captura os arquivos

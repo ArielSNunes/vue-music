@@ -5,16 +5,16 @@ import { useUploadProgressStore } from "@/stores/uploadProgress"
 import { Database } from "@/services/Database"
 import { auth, db } from "@/includes/firebase"
 import { mapActions, mapState } from "pinia"
-import { useSongs } from "@/stores/songs"
+import { useSongsStore } from "@/stores/songs"
 
 export default {
   name: "ManageView",
   components: { MySongs, Upload },
   computed: {
-    ...mapState(useSongs, ["songs"])
+    ...mapState(useSongsStore, ["songs"])
   },
   methods: {
-    ...mapActions(useSongs, ["addSong"])
+    ...mapActions(useSongsStore, ["addSong"])
   },
   async created() {
     const database = new Database(db)

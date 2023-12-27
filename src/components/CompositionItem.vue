@@ -1,8 +1,9 @@
 <script>
 import { Database } from "@/services/Database"
-import { db } from "@/includes/firebase"
+import { db, storage } from "@/includes/firebase"
 import { mapActions } from "pinia"
-import { useSongs } from "@/stores/songs"
+import { useSongsStore } from "@/stores/songs"
+import { FileStorage } from "@/services/FileStorage"
 
 export default {
   name: "CompositionItem",
@@ -22,13 +23,30 @@ export default {
       inSubmission: false,
       showAlert: false,
       alertVariant: "bg-blue-500",
-      alertMessage: "Please wait! Updating song info."
+      alertMessage: "Please wait! Updating song info.",
+      database: new Database(db),
+      storage: new FileStorage(storage)
     }
   },
   methods: {
-    ...mapActions(useSongs, {
-      updateSongState: "updateSong"
+    ...mapActions(useSongsStore, {
+      updateSongState: "updateSong",
+      deleteSong: "removeSong"
     }),
+    async removeSong() {
+      try {
+        const { docId, originalName } = this.song
+        const directory = this.storage.createDirPath({
+          category: "songs",
+          filename: originalName
+        })
+        await this.database.deleteSong(docId)
+        await this.storage.deleteFile(originalName, { directory })
+        this.deleteSong(docId)
+      } catch (e) {
+
+      }
+    },
     async updateSong({ modifiedName, genre }) {
       this.inSubmission = true
       this.showAlert = true
@@ -36,13 +54,11 @@ export default {
       this.alertMessage = "Please wait! Updating song info."
 
       try {
-        const database = new Database(db)
         const newSongData = {
           modifiedName,
-          genre,
-          createdAt: this.song.createdAt
+          genre
         }
-        await database.updateSong(this.song.docId, newSongData)
+        await this.database.updateSong(this.song.docId, newSongData)
         this.updateSongState(this.song.docId, newSongData)
         this.inSubmission = false
         this.alertVariant = "bg-green-500"
@@ -51,6 +67,7 @@ export default {
           this.showForm = false
         }, 1000)
       } catch (e) {
+        console.log(e)
         this.inSubmission = false
         this.alertVariant = "bg-red-500"
         this.alertMessage = "Something went wrong! Try again later."
@@ -69,6 +86,7 @@ export default {
       </h4>
       <button
         class="ml-1 py-1 px-2 text-sm rounded text-white bg-red-600 float-right"
+        @click.prevent="removeSong"
       >
         <i class="fa fa-times"></i>
       </button>

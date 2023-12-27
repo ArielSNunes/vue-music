@@ -1,6 +1,6 @@
 import { defineStore } from "pinia"
 
-export const useSongs = defineStore("songs", {
+export const useSongsStore = defineStore("songs", {
   state: () => ({
     songs: []
   }),
@@ -16,6 +16,9 @@ export const useSongs = defineStore("songs", {
         if (song.docId !== songId) return song
         return { ...song, ...songData }
       })
+    },
+    removeSong(songId) {
+      this.songs = this.songs.filter(song => song.docId !== songId)
     }
   }
 })

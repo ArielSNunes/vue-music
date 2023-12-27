@@ -58,4 +58,18 @@ export class FileStorage {
     // Inicia o envio
     return songsRef.put(file)
   }
+
+  /**
+   * Método responsável por apaggar uma música
+   *
+   * @param {string} originalName
+   * @param {FileMeta} fileMeta
+   * @return {Promise<void>}
+   */
+  deleteFile = async (originalName, fileMeta) => {
+    // Cria a referência do storage
+    const ref = this.storage.ref()
+    const songRef = ref.child(fileMeta.directory)
+    return await songRef.delete()
+  }
 }
