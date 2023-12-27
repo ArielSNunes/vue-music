@@ -155,6 +155,7 @@ export class FileHandler {
       genre: "",
       commentCount: 0,
     }
+    // Captura a referência do arquivo
     const songRef = task.snapshot.ref
 
     // Adiciona a URL

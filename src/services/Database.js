@@ -131,8 +131,7 @@ export class Database {
    */
   updateSong = async (songId, data) => {
     const updateData = this.#basicUpdateData(data)
-    console.log(songId, updateData)
-    return await this.#updateItem("songs", songId,updateData)
+    return await this.#updateItem("songs", songId, updateData)
   }
 
   /**

@@ -4,6 +4,7 @@ import { db, storage } from "@/includes/firebase"
 import { mapActions } from "pinia"
 import { useSongsStore } from "@/stores/songs"
 import { FileStorage } from "@/services/FileStorage"
+import { useUploadProgressStore } from "@/stores/uploadProgress"
 
 export default {
   name: "CompositionItem",
@@ -33,6 +34,7 @@ export default {
       updateSongState: "updateSong",
       deleteSong: "removeSong"
     }),
+    ...mapActions(useUploadProgressStore, ["setAllSaved", "setAtLeastOneUnsaved"]),
     async removeSong() {
       try {
         const { docId, originalName } = this.song
@@ -63,6 +65,7 @@ export default {
         this.inSubmission = false
         this.alertVariant = "bg-green-500"
         this.alertMessage = "Success!"
+        this.setAllSaved()
         setTimeout(() => {
           this.showForm = false
         }, 1000)
@@ -109,6 +112,7 @@ export default {
             type="text"
             class="block w-full py-1.5 px-3 text-gray-800 border border-gray-300 transition duration-500 focus:outline-none focus:border-black rounded"
             placeholder="Enter Song Title"
+            @input="setAtLeastOneUnsaved"
           />
           <error-message class="text-red-600" name="modifiedName" />
         </div>
@@ -119,6 +123,7 @@ export default {
             type="text"
             class="block w-full py-1.5 px-3 text-gray-800 border border-gray-300 transition duration-500 focus:outline-none focus:border-black rounded"
             placeholder="Enter Genre"
+            @input="setAtLeastOneUnsaved"
           />
           <error-message class="text-red-600" name="genre" />
         </div>

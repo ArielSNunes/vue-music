@@ -11,7 +11,8 @@ export default {
   name: "ManageView",
   components: { MySongs, Upload },
   computed: {
-    ...mapState(useSongsStore, ["songs"])
+    ...mapState(useSongsStore, ["songs"]),
+    ...mapState(useUploadProgressStore, ["unsavedItems"])
   },
   methods: {
     ...mapActions(useSongsStore, ["addSong"])
@@ -28,17 +29,37 @@ export default {
     })
   },
   beforeRouteLeave: (to, from, next) => {
+    // Usa a store
     const uploadProgressStore = useUploadProgressStore()
-    uploadProgressStore.cancelUploads()
-    return next()
+    
+    // Verifica se não tem nada não salvo
+    if (!uploadProgressStore.unsavedItems) {
+      return next()
+    }
+    // Confirma se deseja sair da tela
+    const exitConfirmation = confirm("Unsaved changes will be lost! Confirm page exit?")
+    
+    if (exitConfirmation) {
+      // Cancela os uploads caso vá sair da tela
+      uploadProgressStore.cancelUploads()
+    }
+    
+    return next(exitConfirmation)
   },
   beforeRouteEnter: (to, from, next) => {
+    // Usa as stores
     const uploadProgressStore = useUploadProgressStore()
+    const songsStore = useSongsStore()
     //   const store = useUserStore()
     //   if (!store.userLoggedIn) {
     //     return next({ name: "home" })
     //   }
+    
+    // Limpa os uploads
     uploadProgressStore.resetProgress()
+    
+    // Limpa as músicas
+    songsStore.clearSongs()
     next()
   }
 }

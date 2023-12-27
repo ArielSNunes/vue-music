@@ -13,7 +13,8 @@ import { defineStore } from "pinia"
 export const useUploadProgressStore = defineStore("uploadProgress", {
   state: () => ({
     uploads: [],
-    progress: 0
+    progress: 0,
+    unsavedItems: false
   }),
   actions: {
     /**
@@ -58,6 +59,12 @@ export const useUploadProgressStore = defineStore("uploadProgress", {
         ...this.uploads[index],
         ...data
       }
+    },
+    setAllSaved() {
+      this.unsavedItems = false
+    },
+    setAtLeastOneUnsaved() {
+      this.unsavedItems = true
     }
   }
 })

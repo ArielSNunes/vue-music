@@ -69,7 +69,9 @@ export class FileStorage {
   deleteFile = async (originalName, fileMeta) => {
     // Cria a referência do storage
     const ref = this.storage.ref()
+    // Captura o arquivo
     const songRef = ref.child(fileMeta.directory)
+    // Deleta o arquivop
     return await songRef.delete()
   }
 }
