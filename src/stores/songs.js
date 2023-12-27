@@ -19,6 +19,16 @@ export const useSongsStore = defineStore("songs", {
     },
     removeSong(songId) {
       this.songs = this.songs.filter(song => song.docId !== songId)
+    },
+    getLastSong() {
+      return this.songs[this.songs.length - 1]
+    },
+    getIds() {
+      return this.songs.map(song => {
+        if (song.docId) return song.docId
+        if (song.docID) return song.docID
+        return null
+      }).filter(id => !!id)
     }
   }
 })

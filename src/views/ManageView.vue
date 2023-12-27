@@ -19,7 +19,7 @@ export default {
   },
   async created() {
     const database = new Database(db)
-    const files = await database.listFiles(auth.currentUser.uid)
+    const files = await database.listUserSongs(auth.currentUser.uid)
     files.forEach(doc => {
       const song = {
         ...doc.data(),

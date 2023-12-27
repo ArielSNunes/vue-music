@@ -69,7 +69,6 @@ export class Database {
     }
   }
 
-
   /**
    * Método responsável por adicionar os campos updatedAt no objeto
    * @param {object} data
@@ -116,11 +115,10 @@ export class Database {
    *
    * @return {Promise<firebase.firestore.QuerySnapshot<firebase.firestore.DocumentData>>}
    */
-  listFiles = async (userId) => {
-    const snapshot = await this.db.collection("songs")
+  listUserSongs = async (userId) => {
+    return await this.db.collection("songs")
       .where("userId", "==", userId)
       .get()
-    return snapshot
   }
 
   /**
@@ -142,5 +140,29 @@ export class Database {
   deleteSong = async (songId) => {
     const fileRef = await this.db.collection("songs").doc(songId)
     return await fileRef.delete()
+  }
+
+  getDocById = async (docId) => {
+    return await this.db.collection("songs").doc(docId).get()
+  }
+
+  /**
+   * Lista todas as músicas, paginadas
+   * @param {number} maxPerPage
+   * @param {string} lastDocId
+   * @return {Promise<firebase.firestore.QuerySnapshot<firebase.firestore.DocumentData>>}
+   */
+  listAllSongs = async (maxPerPage, lastDocId) => {
+    let songsQuery = this.db.collection("songs")
+      .orderBy("createdAt")
+
+    if (lastDocId) {
+      const lastDoc = await this.getDocById(lastDocId)
+      songsQuery = songsQuery.startAfter(lastDoc)
+    }
+
+    return await songsQuery
+      .limit(maxPerPage)
+      .get()
   }
 }
