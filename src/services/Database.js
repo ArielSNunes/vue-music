@@ -24,6 +24,13 @@
  * @property {string} modifiedName
  * @property {string} genre
  * @property {Date} createdAt
+ *
+ * @typedef CommentCreateData
+ * @type {object}
+ * @property {string} comment
+ * @property {string} songID
+ * @property {string} name
+ * @property {string} uid
  */
 
 /**
@@ -164,5 +171,15 @@ export class Database {
     return await songsQuery
       .limit(maxPerPage)
       .get()
+  }
+
+  /**
+   * Método responsável por cadastrar o comentário na base
+   * @param {CommentCreateData} commentObject
+   * @return {Promise<firebase.firestore.DocumentReference<firebase.firestore.DocumentData>>}
+   */
+  createComment = async (commentObject) => {
+    const createObject = this.#basicCreateData(commentObject)
+    return await this.#addItemToCollection("comments", createObject)
   }
 }
