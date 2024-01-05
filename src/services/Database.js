@@ -182,4 +182,22 @@ export class Database {
     const createObject = this.#basicCreateData(commentObject)
     return await this.#addItemToCollection("comments", createObject)
   }
+
+  /**
+   * Lista os comentários da música
+   * @param {string} songId
+   * @return {Promise<*[]>}
+   */
+  getComments = async (songId) => {
+    const snapshots = await this.db.collection("comments")
+      .where("songID", "==", songId)
+      .get();
+
+    const comments = []
+    snapshots.forEach(doc => {
+      comments.push({ docID: doc.id, ...doc.data() })
+    })
+
+    return comments
+  }
 }

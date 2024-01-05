@@ -16,11 +16,30 @@ export default {
       commentInSubmission: false,
       commentShowAlert: false,
       commentAlertVariant: "bg-blue-500",
-      commentAlertMessage: "Please wait! Yout comment is being submitted."
+      commentAlertMessage: "Please wait! Yout comment is being submitted.",
+      comments: [],
+      ordering: 1
     }
   },
   computed: {
-    ...mapState(useUserStore, ["userLoggedIn"])
+    ...mapState(useUserStore, ["userLoggedIn"]),
+    sortedComments() {
+      return this.comments.map(c => {
+        const date = new Date(c.createdAt.seconds * 1000)
+        const dateFormat = new Intl.DateTimeFormat("pt-BR", {
+          dateStyle: "short",
+          timeStyle: "short",
+        })
+        c.commentDate = dateFormat.format(date)
+
+        return c
+      }).sort((a, b) => {
+        if (this.ordering === 1) {
+          return new Date(b.createdAt * 1000) - new Date(a.createdAt * 1000)
+        }
+        return new Date(a.createdAt * 1000) - new Date(b.createdAt * 1000)
+      })
+    }
   },
   async created() {
     const song = await this.database.getDocById(this.$route.params.id)
@@ -29,8 +48,12 @@ export default {
       return
     }
     this.song = song.data()
+    await this.getComments()
   },
   methods: {
+    async getComments() {
+      this.comments = await this.database.getComments(this.$route.params.id)
+    },
     async addComment({ comment, ...values }, { resetForm, ...context }) {
       this.commentInSubmission = true
       this.commentShowAlert = true
@@ -51,6 +74,7 @@ export default {
         setTimeout(() => {
           this.commentShowAlert = false
         }, 1000)
+        await this.getComments()
         resetForm()
       } catch (e) {
         this.commentInSubmission = false
@@ -117,6 +141,7 @@ export default {
         <!-- Sort Comments -->
         <select
           class="block mt-4 py-1.5 px-3 text-gray-800 border border-gray-300 transition duration-500 focus:outline-none focus:border-black rounded"
+          v-model="ordering"
         >
           <option value="1">Latest</option>
           <option value="2">Oldest</option>
@@ -126,76 +151,18 @@ export default {
   </section>
   <!-- Comments -->
   <ul class="container mx-auto">
-    <li class="p-6 bg-gray-50 border border-gray-200">
+    <li class="p-6 bg-gray-50 border border-gray-200"
+      v-for="comment in sortedComments"
+      :key="comment.docID"
+      :comment="comment">
       <!-- Comment Author -->
       <div class="mb-5">
-        <div class="font-bold">Elaine Dreyfuss</div>
-        <time>5 mins ago</time>
+        <div class="font-bold">{{ comment.name }}</div>
+        <time>{{ comment.commentDate }}</time>
       </div>
 
       <p>
-        Sed ut perspiciatis unde omnis iste natus error sit voluptatem
-        accusantium der doloremque laudantium.
-      </p>
-    </li>
-    <li class="p-6 bg-gray-50 border border-gray-200">
-      <!-- Comment Author -->
-      <div class="mb-5">
-        <div class="font-bold">Elaine Dreyfuss</div>
-        <time>5 mins ago</time>
-      </div>
-
-      <p>
-        Sed ut perspiciatis unde omnis iste natus error sit voluptatem
-        accusantium der doloremque laudantium.
-      </p>
-    </li>
-    <li class="p-6 bg-gray-50 border border-gray-200">
-      <!-- Comment Author -->
-      <div class="mb-5">
-        <div class="font-bold">Elaine Dreyfuss</div>
-        <time>5 mins ago</time>
-      </div>
-
-      <p>
-        Sed ut perspiciatis unde omnis iste natus error sit voluptatem
-        accusantium der doloremque laudantium.
-      </p>
-    </li>
-    <li class="p-6 bg-gray-50 border border-gray-200">
-      <!-- Comment Author -->
-      <div class="mb-5">
-        <div class="font-bold">Elaine Dreyfuss</div>
-        <time>5 mins ago</time>
-      </div>
-
-      <p>
-        Sed ut perspiciatis unde omnis iste natus error sit voluptatem
-        accusantium der doloremque laudantium.
-      </p>
-    </li>
-    <li class="p-6 bg-gray-50 border border-gray-200">
-      <!-- Comment Author -->
-      <div class="mb-5">
-        <div class="font-bold">Elaine Dreyfuss</div>
-        <time>5 mins ago</time>
-      </div>
-
-      <p>
-        Sed ut perspiciatis unde omnis iste natus error sit voluptatem
-        accusantium der doloremque laudantium.
-      </p>
-    </li>
-    <li class="p-6 bg-gray-50 border border-gray-200">
-      <!-- Comment Author -->
-      <div class="mb-5">
-        <div class="font-bold">Elaine Dreyfuss</div>
-        <time>5 mins ago</time>
-      </div>
-
-      <p>
-        Sed ut perspiciatis unde omnis iste natus error sit voluptatem
-        accusantium der doloremque laudantium.
+        {{ comment.comment }}
       </p>
     </li>
   </ul>
