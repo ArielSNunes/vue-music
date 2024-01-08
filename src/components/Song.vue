@@ -1,8 +1,9 @@
 <script>
 import { auth, db } from "@/includes/firebase"
 import { Database } from "@/services/Database"
-import { mapState } from "pinia"
+import { mapState, mapActions } from "pinia"
 import { useUserStore } from "@/stores/users"
+import { usePlayerStore } from "@/stores/player"
 
 export default {
   name: "Song",
@@ -63,10 +64,10 @@ export default {
     const { ordering } = this.$route.query
     this.ordering = ['1', '2'].includes(ordering) ? +ordering : 1
     this.song = song.data()
-    console.log(this.song)
     await this.getComments()
   },
   methods: {
+    ...mapActions(usePlayerStore, ['updateSong']),
     async getComments() {
       this.comments = await this.database.getComments(this.$route.params.id)
       this.song.commentCount = this.comments.length
@@ -115,7 +116,8 @@ export default {
       style="background-image: url(/assets/img/song-header.png)"></div>
     <div class="container mx-auto flex items-center">
       <!-- Play/Pause Button -->
-      <button type="button" class="z-50 h-24 w-24 text-3xl bg-white text-black rounded-full focus:outline-none">
+      <button type="button" class="z-50 h-24 w-24 text-3xl bg-white text-black rounded-full focus:outline-none"
+        @click.prevent="updateSong(song)">
         <i class="fas fa-play"></i>
       </button>
       <div class="z-50 text-left ml-8">
