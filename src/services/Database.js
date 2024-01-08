@@ -21,9 +21,10 @@
  *
  * @typedef SongUpdateDate
  * @type {object}
- * @property {string} modifiedName
- * @property {string} genre
- * @property {Date} createdAt
+ * @property {?string} modifiedName
+ * @property {?string} genre
+ * @property {?Date} createdAt
+ * @property {?number} commentCount
  *
  * @typedef CommentCreateData
  * @type {object}
