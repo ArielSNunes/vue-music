@@ -26,8 +26,11 @@ export default {
 
 <template>
   <app-header></app-header>
-  <router-view></router-view>
-  <!-- Player -->
+  <router-view v-slot="{ Component }">
+    <transition name="fade" mode="out-in">
+      <component :is="Component"></component>
+    </transition>
+  </router-view>
   <app-player></app-player>
   <app-auth></app-auth>
 </template>

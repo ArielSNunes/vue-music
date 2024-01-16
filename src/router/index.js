@@ -3,7 +3,7 @@ import HomeView from "@/views/HomeView.vue"
 import AboutView from "@/views/AboutView.vue"
 import ManageView from "@/views/ManageView.vue"
 import { useUserStore } from "@/stores/users"
-import Song from "@/components/Song.vue"
+import SongView from "@/views/SongView.vue"
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -40,7 +40,7 @@ const router = createRouter({
     {
       name: "song",
       path: "/song/:id",
-      component: Song
+      component: SongView
     },
     {
       path: "/:catchAll(.*)*",

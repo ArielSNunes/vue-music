@@ -42,16 +42,14 @@ input[type="file"] {
 
 .progress-bar {
     background-size: 1rem 1rem;
-    background-image: linear-gradient(
-            45deg,
+    background-image: linear-gradient(45deg,
             rgba(255, 255, 255, 0.15) 25%,
             transparent 25%,
             transparent 50%,
             rgba(255, 255, 255, 0.15) 50%,
             rgba(255, 255, 255, 0.15) 75%,
             transparent 75%,
-            transparent
-    );
+            transparent);
     animation: progress-bar-stripes 1s linear infinite;
 }
 
@@ -64,6 +62,7 @@ input[type="file"] {
     0% {
         background-position: 1rem 0;
     }
+
     100% {
         background-position: 0 0;
     }
@@ -73,7 +72,23 @@ input[type="file"] {
     0% {
         background-position: 0 0;
     }
+
     100% {
         background-position: -4000px 0;
     }
+}
+
+
+
+.fade-enter-form {
+    opacity: 0;
+}
+
+.fade-enter-active {
+    transition: all .5s linear;
+}
+
+.fade-leave-to {
+    opacity: 0;
+    transition: all .5s linear;
 }
