@@ -8,6 +8,7 @@ import { IconDirective } from "./directives/icon"
 
 import App from "./App.vue"
 import router from "./router"
+import { i18n } from "./includes/i18n"
 
 let app
 // Método para o firebase iniciar a autenticação antes do app
@@ -21,6 +22,7 @@ auth.onAuthStateChanged(() => {
 	app.use(createPinia())
 	app.use(router)
 	app.use(VeeValidatePlugin, { foo: 100 })
+	app.use(i18n)
 
 	app.directive('icon', IconDirective)
 
