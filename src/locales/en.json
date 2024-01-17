@@ -2,6 +2,9 @@
     "pages": {
         "home": {
             "listen": "Listen to Great Music!"
+        },
+        "song": {
+            "commentCount": "1 comment | {count} comments"
         }
     }
 }

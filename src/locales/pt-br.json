@@ -2,6 +2,9 @@
     "pages": {
         "home": {
             "listen": "Ouça a melhor música!"
+        },
+        "song": {
+            "commentCount": "1 comentário | {count} comentários"
         }
     }
 }
