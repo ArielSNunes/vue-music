@@ -1,10 +1,16 @@
 {
     "pages": {
         "home": {
-            "listen": "Ouça a melhor música!"
+            "listen": "Ouça as melhores músicas!"
         },
         "song": {
             "commentCount": "1 comentário | {count} comentários"
+        }
+    },
+    "components": {
+        "register": {
+            "accept": "Eu concordo com os {0} do portal",
+            "tos": "Termos de Serviço"
         }
     }
 }

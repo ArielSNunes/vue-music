@@ -9,6 +9,9 @@ export default {
     ...mapStores(useModalStore, useUserStore),
     // ...mapState(useModalStore, ["isOpen"]),
     // ...mapWritableState(useModalStore, ["isOpen"])
+    currentLocale() {
+      return this.$i18n.locale === 'en' ? 'English' : 'Português (Brasil)'
+    }
   },
   methods: {
     toggleAuthModal() {
@@ -18,6 +21,9 @@ export default {
       this.userStore.signOut()
       if (this.$route.meta.requiresAuth)
         this.$router.push({ name: "home" })
+    },
+    changeLocale() {
+      this.$i18n.locale = this.$i18n.locale === 'en' ? 'pt-br' : 'en'
     }
   }
 }
@@ -26,8 +32,7 @@ export default {
 <template>
   <header id="header" class="bg-gray-700">
     <nav class="container mx-auto flex justify-start items-center py-5 px-4">
-      <router-link class="text-white font-bold uppercase text-2xl mr-4"
-        :to="{ name: 'home' }"
+      <router-link class="text-white font-bold uppercase text-2xl mr-4" :to="{ name: 'home' }"
         exact-active-class="no-active">
         Music
       </router-link>
@@ -36,7 +41,7 @@ export default {
         <!-- Primary Navigation -->
         <ul class="flex flex-row mt-1">
           <li>
-            <router-link class="px-2 text-white" :to="{name: 'about'}">About</router-link>
+            <router-link class="px-2 text-white" :to="{ name: 'about' }">About</router-link>
           </li>
           <!-- Navigation Links -->
           <li v-if="!userStore.userLoggedIn">
@@ -44,18 +49,23 @@ export default {
           </li>
           <template v-else>
             <li>
-              <router-link class="px-2 text-white" :to="{name: 'manage'}">Manage</router-link>
+              <router-link class="px-2 text-white" :to="{ name: 'manage' }">Manage</router-link>
             </li>
             <li>
               <a class="px-2 text-white" href="#" @click.prevent="signOut">Logout</a>
             </li>
           </template>
         </ul>
+        <ul class="ml-auto">
+          <li>
+            <a href="#" class="px-2 text-white" @click.prevent="changeLocale">
+              {{ currentLocale }}
+            </a>
+          </li>
+        </ul>
       </div>
     </nav>
   </header>
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>
