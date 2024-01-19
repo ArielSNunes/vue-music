@@ -5,6 +5,9 @@ import { createPinia } from "pinia"
 import VeeValidatePlugin from "@/includes/validation"
 import { auth } from "@/includes/firebase"
 import { IconDirective } from "./directives/icon"
+import { registerSW } from "virtual:pwa-register";
+
+registerSW({ immediate: true });
 
 import App from "./App.vue"
 import router from "./router"

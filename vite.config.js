@@ -10,6 +10,8 @@ export default defineConfig({
     vue(),
     VitePWA({
       registerType: 'autoUpdate',
+      strategies: 'generateSW',
+      injectRegister: 'auto',
       devOptions: {
         enabled: true
       },
@@ -17,6 +19,7 @@ export default defineConfig({
         name: 'Vue Music App',
         short_name: 'Vuesic',
         theme_color: '#ff5e3a',
+        "scope": "/",
         icons: [
           {
             src: 'assets/img/pwa-192x192.png',
