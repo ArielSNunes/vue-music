@@ -53,6 +53,19 @@ export default {
       // Captura os arquivos
       const files = fileHandler.handleDragUpload(e)
 
+      if (!navigator.onLine) {
+        files.forEach(file => {
+          uploadProgressStore.addUpload({
+            currentProgress: '100',
+            task: {},
+            variant: 'bg-red-400',
+            textColor: 'text-red-400',
+            icon: 'fas fa-times',
+            name: file.name
+          })
+        })
+        return
+      }
       // Faz o envio dos arquivos
       await fileHandler.uploadMusics(files);
 
@@ -64,9 +77,7 @@ export default {
 </script>
 
 <template>
-  <div
-    class="bg-white rounded border border-gray-200 relative flex flex-col"
-  >
+  <div class="bg-white rounded border border-gray-200 relative flex flex-col">
     <div class="px-6 pt-6 pb-5 font-bold border-b border-gray-200">
       <span class="card-title">Upload</span>
       <i class="fas fa-upload float-right text-green-400 text-2xl"></i>
@@ -76,16 +87,10 @@ export default {
       <div
         class="w-full px-10 py-20 rounded text-center cursor-pointer border border-dashed border-gray-400 text-gray-400 transition duration-500 hover:text-white hover:bg-green-400 hover:border-green-400 hover:border-solid"
         :class="{
-          'bg-green-400 border-green-400 border-solid' : isDragover
-        }"
-        @drag.prevent.stop=""
-        @dragstart.prevent.stop=""
-        @dragend.prevent.stop="removeDrag"
-        @dragover.prevent.stop="addDrag"
-        @dragenter.prevent.stop="addDrag"
-        @dragleave.prevent.stop="removeDrag"
-        @drop.prevent.stop="upload"
-      >
+          'bg-green-400 border-green-400 border-solid': isDragover
+        }" @drag.prevent.stop="" @dragstart.prevent.stop="" @dragend.prevent.stop="removeDrag"
+        @dragover.prevent.stop="addDrag" @dragenter.prevent.stop="addDrag" @dragleave.prevent.stop="removeDrag"
+        @drop.prevent.stop="upload">
         <h5>Drop your files here</h5>
       </div>
       <input type="file" multiple @change="upload" />
@@ -99,17 +104,12 @@ export default {
         </div>
         <div class="flex h-4 overflow-hidden bg-gray-200 rounded">
           <!-- Inner Progress Bar -->
-          <div
-            class="transition-all progress-bar bg-blue-400"
-            :style="{width: `${upload.currentProgress}%`}"
-            :class="upload.variant"
-          ></div>
+          <div class="transition-all progress-bar bg-blue-400" :style="{ width: `${upload.currentProgress}%` }"
+            :class="upload.variant"></div>
         </div>
       </div>
     </div>
   </div>
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>
