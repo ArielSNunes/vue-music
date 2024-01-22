@@ -17,6 +17,7 @@
     "firebase": "^10.7.0",
     "howler": "2.2.4",
     "lodash": "4.17.21",
+    "nprogress": "^0.2.0",
     "pinia": "^2.1.7",
     "vee-validate": "4.11.8",
     "vue": "^3.3.4",

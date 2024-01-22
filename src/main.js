@@ -1,4 +1,5 @@
 import "./assets/main.css"
+import 'nprogress/nprogress.css'
 
 import { createApp } from "vue"
 import { createPinia } from "pinia"
@@ -13,8 +14,12 @@ registerSW({ immediate: true });
 import App from "./App.vue"
 import router from "./router"
 import { i18n } from "./includes/i18n"
+import progressBar from "./includes/progress-bar"
 
 let app
+
+progressBar(router)
+
 // Método para o firebase iniciar a autenticação antes do app
 auth.onAuthStateChanged(() => {
 	// Caso já exista o app, não inicia novamente
@@ -29,6 +34,6 @@ auth.onAuthStateChanged(() => {
 	app.use(i18n)
 	app.use(GlobalComponents)
 	app.directive('icon', IconDirective)
-
+	
 	app.mount("#app")
 })
