@@ -27,6 +27,10 @@ export default defineConfig({
             type: 'image/png'
           }
         ]
+      },
+      workbox: {
+        globPatterns: ['**/*.{js,css,html,png,jpg,}'],
+        globIgnores: ['assets/img/pwa-192x192.png']
       }
     })
   ],

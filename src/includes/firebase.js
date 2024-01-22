@@ -15,7 +15,8 @@ firebase.initializeApp(firebaseConfig)
 
 export const auth = firebase.auth()
 export const db = firebase.firestore()
-
+db.enablePersistence({ synchronizeTabs: true })
+  .catch(err => console.log(`Persistence error ${err}`))
 export const storage = firebase.storage()
 
 export const firestore = firebase.firestore
