@@ -4,8 +4,9 @@ import { createApp } from "vue"
 import { createPinia } from "pinia"
 import VeeValidatePlugin from "@/includes/validation"
 import { auth } from "@/includes/firebase"
-import { IconDirective } from "./directives/icon"
-import { registerSW } from "virtual:pwa-register";
+import { IconDirective } from "@/directives/icon"
+import { registerSW } from "virtual:pwa-register"
+import GlobalComponents from '@/includes/_globals'
 
 registerSW({ immediate: true });
 
@@ -26,7 +27,7 @@ auth.onAuthStateChanged(() => {
 	app.use(router)
 	app.use(VeeValidatePlugin, { foo: 100 })
 	app.use(i18n)
-
+	app.use(GlobalComponents)
 	app.directive('icon', IconDirective)
 
 	app.mount("#app")

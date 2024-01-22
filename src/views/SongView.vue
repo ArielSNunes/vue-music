@@ -5,12 +5,13 @@ import { mapState, mapActions } from "pinia"
 import { useUserStore } from "@/stores/users"
 import { usePlayerStore } from "@/stores/player"
 
+const database = new Database(db)
+
 export default {
   name: "Song",
   data() {
     return {
       song: {},
-      database: new Database(db),
       schema: {
         comment: "required|min:3"
       },
@@ -59,21 +60,25 @@ export default {
       return
     }
   },
-  async created() {
-    const song = await this.database.getDocById(this.$route.params.id)
-    if (!song.exists) {
-      this.$router.push({ name: "home" })
-      return
-    }
-    const { ordering } = this.$route.query
-    this.ordering = ['1', '2'].includes(ordering) ? +ordering : 1
-    this.song = { ...song.data(), docID: this.$route.params.id }
-    await this.getComments()
+  async beforeRouteEnter(to, from, next) {
+    const song = await database.getDocById(to.params.id)
+
+    next(async (vm) => {
+      if (!song.exists) {
+        vm.$router.push({ name: "home" })
+        return
+      }
+      const { ordering } = vm.$route.query
+      vm.ordering = ['1', '2'].includes(ordering) ? +ordering : 1
+      vm.song = { ...song.data(), docID: vm.$route.params.id }
+      await vm.getComments()
+    })
+
   },
   methods: {
     ...mapActions(usePlayerStore, ['updateSong']),
     async getComments() {
-      this.comments = await this.database.getComments(this.$route.params.id)
+      this.comments = await database.getComments(this.$route.params.id)
       this.song.commentCount = this.comments.length
     },
     async addComment({ comment, ...values }, { resetForm, ...context }) {
@@ -88,13 +93,13 @@ export default {
           name: auth.currentUser.displayName,
           uid: auth.currentUser.uid
         }
-        const createdComment = await this.database.createComment(commentObj)
+        const createdComment = await database.createComment(commentObj)
         this.commentInSubmission = false
         this.commentShowAlert = true
         this.commentAlertVariant = "bg-green-500"
         this.commentAlertMessage = "Comment added!"
         this.song.commentCount++
-        await this.database.updateSong(this.$route.params.id, {
+        await database.updateSong(this.$route.params.id, {
           commentCount: this.song.commentCount
         })
         setTimeout(() => {
